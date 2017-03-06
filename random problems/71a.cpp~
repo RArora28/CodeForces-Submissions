@@ -1,0 +1,22 @@
+#include<stdio.h>
+#include<string.h>
+
+int main() {
+
+  int i, n len;
+  char str[200];
+
+  scanf("%d", &n);
+
+  for(i = 0; i < n; i++) {
+
+    scanf("%s", str);
+    len = strlen(str);
+    printf("%c%d%c\n", str[0], len - 2, str[len-1]);
+
+  }
+
+  return 0;
+}
+
+  

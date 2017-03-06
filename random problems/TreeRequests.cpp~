@@ -1,0 +1,147 @@
+/* Rishabh Arora
+   IIIT-Hyderabad */
+
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef pair<int,int> II;
+typedef vector<int> VI;
+typedef vector<II> VII;
+typedef long long int LL;
+typedef unsigned long long int ULL;
+
+#define rep(i, a, b) for(i = a; i < b; i++)
+#define rev(i, a, b) for(i = a; i > b; i--)
+#define INF INT_MAX
+#define PB push_back
+#define MP make_pair
+#define F first
+#define S second
+#define SET(a,b) memset(a, b, sizeof(a))
+
+//debugging statements
+#define TRACE
+#ifdef TRACE
+#define trace(...) __f(#__VA_ARGS__, __VA_ARGS__)
+template <typename Arg1>
+void __f(const char* name, Arg1&& arg1){
+	cerr << name << " : " << arg1 << std::endl;
+}
+template <typename Arg1, typename... Args>
+void __f(const char* names, Arg1&& arg1, Args&&... args){
+	const char* comma = strchr(names + 1, ',');cerr.write(names, comma - names) << " : " << arg1<<" | ";__f(comma+1, args...);
+}
+#else
+#define trace(...)
+#endif
+
+const int N = 5e5+1;
+const int mod = 1e9+7;
+
+bool ans[N], big[N];
+int s[28][N], sub[N], c[N];
+int L[N], c1[N], c2[N];
+vector<VI> adj;
+vector<VII> Q;
+
+void dfs1(int v, int p)
+{
+  sub[v] = 1;
+  int Max = -1;
+  for(auto u: adj[v])
+    if(u != p)
+      {
+	L[u] = L[v]+1;
+	dfs1(u, v);
+	sub[u] += sub[v];
+      }
+  return;
+}
+
+void add(int v, int p, int x)
+{
+  s[c[v]][L[v]] += x;
+  for(auto u : adj[v])
+    if ( ( u != p) && (!big[u]) )
+      add(u, v, x);
+  return;
+}
+
+void dfs2(int v, int p, bool keep)
+{
+  int i,mx=0,j,bigchild=-1;
+  rep(i,0,(int)adj[v].size())
+    {
+      int v1=adj[v][i];
+      if(v1!=p && sub[v1]>mx)
+	mx=sub[v1],bigchild=v1;
+    }
+  for(auto u: adj[v])
+    if( u != p && (u != bigchild))
+      dfs2(u, v, false);
+  if(bigchild != -1)
+    {
+      dfs2(bigchild, v, true);
+      big[bigchild] = true;
+    }
+  add(v, p, 1);
+  rep(i,0,(int)Q[v].size())
+    {
+      int j,ind=Q[v][i].S,cn=0,cn1=0,h1=Q[v][i].F;
+      rep(j,0,26)
+	{
+	  cn1+=s[j][h1];
+	  if(s[j][h1]%2!=0)
+	    cn++;
+	}
+      if(cn<=1)
+        ans[ind]=true;
+      else
+	ans[ind]=false;
+    }
+  big[bigchild] = false;
+  if(!keep)
+    add(v, p, -1);
+  return;
+}
+
+#define si(x) scanf("%d", &x)
+
+int main() {
+  int n, m;
+  int i;
+  si(n);
+  si(m);
+  adj.resize(n+1);
+  Q.resize(n+1);
+  int x;
+  rep(i, 2, n+1)
+    {
+      si(x);
+      adj[x].PB(i);
+      adj[i].PB(x);
+    }
+  string str;
+  cin>>str;
+  rep(i, 0, n)
+    c[i+1] = str[i]-'a';
+  int a, b;
+  rep(i, 1, m+1)
+    {
+      si(a);
+      si(b);
+      Q[a].PB(MP(b, i));
+    }
+  L[1] = 1;
+  dfs1(1, 1);
+  dfs2(1, 1, 1);
+  rep(i, 1, m+1)
+    {
+      if(ans[i])
+	printf("Yes\n");
+      else
+	printf("No\n");
+
+    }
+  return 0;
+}

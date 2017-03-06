@@ -1,0 +1,80 @@
+#include<bits/stdc++.h>
+#include<limits.h>
+using namespace std;
+
+#define mi 1000000007
+
+#define si(x) scanf("%d", &x)
+#define sll(x) scanf("%lld", &x)
+#define dout(x) printf("%d\n", x)
+#define lldout(x) printf("%lld\n", x)
+
+#define ii pair<int, int>
+#define vi vector<int>
+#define vii vector<pair<int, int> >
+#define adjList vector<vector<int> >
+
+#define ll long long int
+
+#define pb push_back
+#define mp make_pair
+
+#define rep(i, a, b) for(i = a; i < b; i++)
+#define rev(i, a, b) for(i = a; i > b; i--)
+
+ll power(ll a,ll b) {
+
+  ll ans=1;  
+
+  while(b > 0){
+      if(b & 1)
+	  ans = ((ans % mi) *(a % mi)) % mi;		
+      a=((a % mi)*(a % mi)) % mi;
+      b >>= 1;
+    }
+  
+  return ans;
+}
+
+adjList g;
+
+int p[10000], h[10000], flag[10000];
+
+void f(int i) {
+
+  flag[i] = 1;
+  
+  if(flag[p[i]] == 1) 
+    h[i] = h[p[i]] + 1;
+  else
+    f(p[i]);
+  
+  return ;
+}
+  
+int main() {
+
+  int n, i;
+  cin>>n;
+  
+  rep(i, 1, n+1)
+    {
+      cin>>p[i];
+
+      if(p[i] != -
+    }
+
+  rep(i, 1, n+1) 
+
+      f(i);
+  
+  int maximum = h[1];
+
+  rep(i, 2, n+1)
+    maximum = max(maximum, h[i]);
+
+  cout<<maximum<<endl;
+  
+  return 0;
+}
+

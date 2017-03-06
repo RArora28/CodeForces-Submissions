@@ -1,0 +1,131 @@
+/* Rishabh Arora
+   IIIT-Hyderabad */
+
+#include <bits/stdc++.h>
+#include <limits.h>
+using namespace std;
+
+typedef pair<int,int> II;
+typedef vector<int> VI;
+typedef vector<II> VII;
+typedef long long int LL;
+typedef unsigned long long int ULL;
+typedef vector<VI> adjList;
+
+#define mod 1000000007
+#define rep(i, a, b) for(i = a; i < b; i++)
+#define rev(i, a, b) for(i = b; i > a; i--)
+#define REP(i, n) for(i = 1; i <= n; i++)
+#define pr0(arr, n) rep(i, 0, n) cout<<arr[i]<<" "; cout<<endl;
+#define pr1(arr, n) rep(i, 1, n+1) cout<<arr[i]<<" "; cout<<endl;
+#define INF INT_MAX
+#define gc getchar_unlocked
+#define PB push_back
+#define MP make_pair
+#define F first
+#define S second
+#define SET(a,b) memset(a, b, sizeof(a))
+#define gu getchar
+#define pu putchar
+#define SI(n) scanf("%d",&n)
+#define PI(n) printf("%d\n",n)
+#define SLL(n) scanf("%lld",&n)
+#define PLL(n) printf("%lld\n",n)
+
+#define TRACE
+
+#ifdef TRACE
+#define trace1(x)                cerr << #x << ": " << x << endl;
+#define trace2(x, y)             cerr << #x << ": " << x << " | " << #y << ": " << y << endl;
+#define trace3(x, y, z)          cerr << #x << ": " << x << " | " << #y << ": " << y << " | " << #z << ": " << z << endl;
+#define trace4(a, b, c, d)       cerr << #a << ": " << a << " | " << #b << ": " << b << " | " << #c << ": " << c << " | " << #d << ": " << d << endl;
+#define trace5(a, b, c, d, e)    cerr << #a << ": " << a << " | " << #b << ": " << b << " | " << #c << ": " << c << " | " << #d << ": " << d << " | " << #e << ": " << e << endl;
+#define trace6(a, b, c, d, e, f) cerr << #a << ": " << a << " | " << #b << ": " << b << " | " << #c << ": " << c << " | " << #d << ": " << d << " | " << #e << ": " << e << " | " << #f << ": " << f << endl;
+
+#else
+
+#define trace1(x)
+#define trace2(x, y)
+#define trace3(x, y, z)
+#define trace4(a, b, c, d)
+#define trace5(a, b, c, d, e)
+#define trace6(a, b, c, d, e, f)
+
+#endif
+
+//fast io using cin/cout
+//ios::sync_with_stdio(false);	cin.tie(NULL);
+
+LL A[100010][5];
+bool ok = true;
+vector<string> S1, R;
+LL i, n;
+LL C[100010], cost = 0;
+  
+LL dp(int i, int s) {
+  
+  if(i >= n)
+    return 0;
+  
+  else if(A[i][s] != -1)
+    return A[i][s];
+
+  else if(s == 0){
+    if(S1[i+1] >= S1[i] || R[i+1] >= S1[i]) {
+      if(S1[i+1] >= S1[i]) 
+	A[i][s] = dp(i+1, 0);
+      if(R[i+1] >= S1[i])
+	A[i][s] = min(A[i][s], C[i+1] + dp(i+1, 1));
+      return A[i][s];
+    }
+    else
+      return A[i][s] = LLONG_MAX;
+  }
+
+  else {
+    if(S1[i+1] >= R[i] || R[i+1] >= R[i]) {
+      if(S1[i+1] >= R[i])
+	A[i][s] = dp(i+1, 0);
+      if(R[i+1] >= R[i])
+	A[i][s] = min(A[i][s], C[i+1] + dp(i+1, 1));
+      return A[i][s];
+    }
+    else
+      return A[i][s] = LLONG_MAX;
+  }
+  
+}
+
+int main() {
+
+  SET(A, -1);
+  
+  cin>>n;
+
+  S1.resize(n+1);
+  R.resize(n+1);
+  
+  rep(i, 1, n+1)
+    cin>>C[i];
+  
+  rep(i, 1, n+1) { 
+    cin>>S1[i];
+    R[i] = S1[i];
+  }
+  
+  rep(i, 1, n+1) 
+    reverse(R[i].begin(), R[i].end());
+  
+  cout<<dp(1, 0)<<" "<<C[1] + dp(1, 1)<<endl;
+  cost = min(dp(1, 0), C[1] + dp(1, 1));
+  
+  if(cost >= 1e16)
+    ok = false;
+
+  if(!ok)
+    cout<<"-1"<<endl;
+  else 
+    cout<<cost<<endl;
+
+  return 0;
+}

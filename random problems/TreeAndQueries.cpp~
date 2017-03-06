@@ -1,0 +1,193 @@
+/* Rishabh Arora
+   IIIT-Hyderabad */
+
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef pair<int,int> II;
+typedef vector<int> VI;
+typedef vector<II> VII;
+typedef long long int LL;
+typedef unsigned long long int ULL;
+
+#define MAXSIZE 100005
+#define mod 1000000007
+#define rep(i, a, b) for(i = a; i < b; i++)
+#define rev(i, a, b) for(i = a; i > b; i--)
+#define INF INT_MAX
+#define PB push_back
+#define MP make_pair
+#define F first
+#define S second
+#define SET(a,b) memset(a, b, sizeof(a))
+
+//debugging statements
+#define TRACE
+#ifdef TRACE
+#define trace(...) __f(#__VA_ARGS__, __VA_ARGS__)
+template <typename Arg1>
+void __f(const char* name, Arg1&& arg1){
+	cerr << name << " : " << arg1 << std::endl;
+}
+template <typename Arg1, typename... Args>
+void __f(const char* names, Arg1&& arg1, Args&&... args){
+	const char* comma = strchr(names + 1, ',');cerr.write(names, comma - names) << " : " << arg1<<" | ";__f(comma+1, args...);
+}
+#else
+#define trace(...)
+#endif
+
+struct node { 
+  int  i, l, r, K;
+};
+
+int sq, K;
+int ans = 0, tim = 1, color[MAXSIZE], W[MAXSIZE], arr[2*MAXSIZE], in[MAXSIZE], out[MAXSIZE],  cnt[MAXSIZE],  query[MAXSIZE];
+bool taken[MAXSIZE];
+vector<vector<int> > adj;
+vector<vector<node> > Q;
+map<int, int> M;
+
+inline bool cmp(node A, node B) { 
+  return A.r < B.r;  
+}
+
+inline int read_int() {
+  char c;
+  while (c = getchar(), c < '0' || c > '9');
+  int t = c - '0';
+  while (c = getchar(), c >= '0' && c <= '9')	t = t * 10 + c - '0';
+  return t;
+}
+
+void dfs(int v) { 
+  taken[v] = true;
+  in[v] = tim++;
+  arr[in[v]] = v;
+  for(auto it : adj[v])
+    if(!taken[it]) 
+      dfs(it);
+  out[v] = tim;
+  out[v]--;
+  return;
+}
+
+inline void add(int x) { 
+  cnt[W[x]]++;
+  if(cnt[W[x]] >= K && color[W[x]] == 0) {  
+    ans++;
+    color[W[x]] = 1;
+  }
+  return;
+}
+
+inline void remove(int x) { 
+  cnt[W[x]]--;
+  if(cnt[W[x]] <= K-1 && color[W[x]] == 1) { 
+    ans--;
+    color[W[x]] = 0;
+  }
+  return; 
+}
+
+int extra(int x) { 
+  if(cnt[M[W[x]]] == 0)
+    return 1;
+  return 0;
+}
+
+int main() {
+  
+  int n, m;
+  int i, j;
+  int u, v;
+  
+  cin>>n>>m;
+
+  adj.resize(n+1);
+
+  rep(i, 1, n+1) 
+    cin>>W[i];
+  
+  int ind = 1;
+  
+  for(auto &it : M) 
+    M[it.F] = ind++;
+
+  rep(i, 1, n) {
+    cin>>u>>v;
+    adj[u].PB(v);
+    adj[v].PB(u);
+  }
+  
+  dfs(1);
+  rep(i, 1, n+1)
+    trace(in[i], out[i]);
+
+  sq = sqrt(2*n);
+  int sz = 2*n / sq + 2;
+  Q.resize(sz + 2);
+  
+  rep(i, 1, m+1) { 
+    node T;
+    
+    cin>>v>>K;
+    
+    T.l = in[v];
+    T.r = out[v];
+    T.K = K;
+    T.i = i;
+    
+    if(T.l % sq == 0)  
+      Q[T.l/sq].PB(T);
+    else 
+      Q[T.l/sq + 1].PB(T);
+  }
+  
+  for(auto &it : Q)
+    sort(it.begin(), it.end(), cmp);
+  
+  i = 0;
+  
+  for(auto it : Q) {
+    cout<<i<<"->";
+    i++;
+    for(auto A : it)
+      cout<<A.l<<"-"<<A.r<<" ";
+  
+    cout<<endl;
+  }
+  
+  i = 0;
+  
+  for(auto it : Q) { 
+    int k;
+    if(it.size() != 0)
+      rep(k, 0, n+1) {
+	color[k] = 0;
+	cnt[k] = 0;
+      }
+    ans = 0;
+    int start = i*sq;
+    int end = start;
+    i++;
+    for(auto X : it) { 
+      int L = X.l, R = X.r;
+      int I = X.i;
+      K = X.K;
+      while(end <= R) add(arr[end++]);
+      while(start < L) remove(arr[start++]);
+      while(start > L) add(arr[start-1]), start--;
+      query[I] = ans;
+      trace(L, R, K);
+      rep(k, 1, n+1) 
+	cout<<cnt[k]<<" ";
+      cout<<endl;
+    }
+    
+  }
+  
+  rep(i, 1, m+1)
+    printf("%d\n", query[i]);
+  return 0;
+}

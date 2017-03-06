@@ -1,0 +1,80 @@
+#include<bits/stdc++.h>
+#include<limits.h>
+using namespace std;
+ 
+#define mod 1000000007
+#define si(x) scanf("%d", &x)
+#define sll(x) scanf("%lld", &x)
+#define pi(x) printf("%d\n", x)
+#define pll(x) printf("%lld\n", x)
+#define ii pair<int, int>
+#define vi vector<int>
+#define vii vector<pair<int, int> >
+#define adjList vector<vector<int> >
+#define ll long long int
+#define pb push_back
+#define mp make_pair
+#define fi first
+#define se second
+#define rep(i, z, q) for(i = z; i < q; i++)
+#define rev(i, z, q) for(i = z; i > q; i--)
+ 
+ll k;
+ll f[100];
+ 
+ll dp(ll sum, ll steps, ll added) {
+  
+  ll i;
+  
+  if(steps == 0) {
+    if(sum == 0) 
+      return 1;
+    else
+      return 0;
+  }
+  
+  else if(steps > 0 && sum <= 0)
+    return 0;
+  
+  else {
+    ll temp = 0;
+    
+    if(steps * f[added] < sum)
+      return 0;
+    
+    rev(i, added, -1) {
+      if(sum - f[i] >= 0)
+        temp = dp(sum-f[i], steps-1, i);       
+    }
+    
+    return temp;
+  }
+}
+
+int main() {
+  
+  ll i, q, x;
+  
+  f[0] = 0;
+  f[1] = 1;
+  
+  rep(i, 2, 45) 
+    f[i] = f[i-1] + f[i-2];
+  
+  cin>>x;
+  
+  rep(i, 0, 45) {
+    if(x == f[i])
+      break;
+    else if(x < f[i]) {
+      i--;
+      break;
+    }
+  }
+  
+  if(i == 45) i--;    
+  
+  cout<<dp(x, 3, i)<<endl;
+  
+  return 0;
+}

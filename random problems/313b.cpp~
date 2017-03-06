@@ -1,0 +1,36 @@
+#include<iostream>
+#include<string>
+using namespace std;
+
+int main()
+{
+  int n, len, a, b;
+  string str;
+  
+  cin>>str;
+  
+  len = str.size();
+  cin>>n;
+  int s[n+1];
+
+  s[1] = 0;
+  
+  for(int i = 2; i <= n; i++)
+    {
+      if(str[i] == str[i-1])
+	  s[i] = s[i-1] + 1;
+      else
+	s[i] = s[i-1];
+	
+    }
+
+  cin>>n;
+  
+  while(n--)
+    {
+      cin>>a>>b;
+      cout<<(s[b] - s[a])<<endl;
+    }
+  
+  return 0;
+}

@@ -1,0 +1,40 @@
+#include<iostream>
+#include<algorithm>
+using namespace std;
+
+int main()
+{
+  int n;
+  pair<int, int> cor[5];
+  
+  cin>>n;
+
+  for(int i = 1; i <= n; i++)
+    cin>>cor[i].first>>cor[i].second;
+
+  if(n == 1)
+    cout<<"-1"<<endl;
+          
+  else if(n == 2)
+    {
+      if(cor[1].first == cor[2].first || cor[1].second == cor[2].second)
+	cout<<"-1"<<endl;
+      else
+	cout<<((cor[1].first - cor[2].first) * abs(cor[1].second -  cor[2].second))<<endl;
+    }
+        
+  else
+    {
+      
+      for(int i = 1; i <= n; i++)
+	{
+	  for(int j = 1; j <= n; j++)
+	    
+	    if(cor[i].first != cor[j].first && cor[i].second != cor[j].second)
+	      break;
+	}
+      cout<<((cor[i].first - cor[j].first) * abs(cor[i].second -  cor[j].second))<<endl;
+  
+    }
+  return 0;
+}

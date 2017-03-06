@@ -1,0 +1,89 @@
+#include<iostream>
+#include<stdio.h>
+#include<stack>
+#include<set>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+vector<vector<int> > g(10);
+vector<vector<int> > gr(10);
+vector<set<int> > scc(6);
+stack<int>s;
+int flag[10], flag1[10];
+
+void dfs(int v)
+{
+  flag[v] = 1;
+  
+  for(vector<int>::iterator it = g[v].begin(); it != g[v].end(); it++)
+    if(flag[*it] == 0)
+      {
+	flag[*it] = 1;
+	dfs(*it);
+      }
+  
+  s.push(v);
+  return; 
+}
+
+void rev_adjlist() {
+
+  for(int i = 1; i <= 8; i++)
+      for(vector<int>::iterator it = g[i].begin(); it != g[i].end(); it++)
+	gr[*it].push_back(i);
+  
+  
+  return;
+}
+
+void dfsr(int v)
+{
+  flag1[v] = 1;
+  cout<<v<<" ";
+    
+  for(vector<int>::iterator it = gr[v].begin(); it != gr[v].end(); it++)
+    if(flag1[*it] == 0)
+      dfsr(*it);
+  
+  return; 
+}
+
+void add_edge(int u, int v)
+{
+  g[u].push_back(v);
+  return;
+}
+
+int main()
+{
+  add_edge(1,2);
+  add_edge(2,4);
+  add_edge(4,3);
+  add_edge(3,1);
+  add_edge(4,6);
+  add_edge(6,5);
+  add_edge(5,7);
+  add_edge(7,6);
+  add_edge(8,7);
+  
+
+  for(int i = 1; i <= 8; i++)
+    if(flag[i] == 0)
+      dfs(i);
+
+  
+  rev_adjlist();
+  
+  while(!s.empty())
+    {
+      if(flag1[s.top()] == 0)
+	{
+	  dfsr(s.top());
+	  cout<<endl;
+	}
+      s.pop();
+    }
+
+  return 0;
+}

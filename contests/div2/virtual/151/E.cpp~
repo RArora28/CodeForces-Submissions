@@ -1,0 +1,133 @@
+/* Rishabh Arora
+   IIIT-Hyderabad */
+
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef pair<int,int> II;
+typedef vector<int> VI;
+typedef vector<II> VII;
+typedef long long int LL;
+typedef unsigned long long int ULL;
+
+#define rep(i, a, b) for(i = a; i < b; i++)
+#define rev(i, a, b) for(i = a; i > b; i--)
+#define INF INT_MAX
+#define PB push_back
+#define MP make_pair
+#define F first
+#define S second
+#define SET(a,b) memset(a, b, sizeof(a))
+
+//debugging statements
+#define TRACE
+#ifdef TRACE
+#define trace(...) __f(#__VA_ARGS__, __VA_ARGS__)
+template <typename Arg1>
+void __f(const char* name, Arg1&& arg1){
+	cerr << name << " : " << arg1 << std::endl;
+}
+template <typename Arg1, typename... Args>
+void __f(const char* names, Arg1&& arg1, Args&&... args){
+	const char* comma = strchr(names + 1, ',');cerr.write(names, comma - names) << " : " << arg1<<" | ";__f(comma+1, args...);
+}
+#else
+#define trace(...)
+#endif
+
+const int N = 1e5+10;
+const int mod = 1e9+7;
+
+bool big[N];
+int sub[N], bigchild[N], ans[N], L[N], n;
+string s[100];
+vector< set<string> > s;
+vector< map<int, string> > m;
+vector<VI> g;
+vector<VII> Q;
+void dfs0(int v, int p)
+{
+  sub[v] = 1;
+  bigchild[v] = -1;
+  int Max = -1;
+  for(auto u : g[v])
+    {
+      if( u != p)
+	{
+	  L[u] = L[v]+1;
+	  dfs0(u, v);
+	  sub[v] += sub[u];
+	  if(sub[u] > Max)
+	    {
+	      Max = sub[u];
+	      bigchild[v] = u;
+	    }
+	}
+    }
+  return;
+}
+void add(int p, int v, int val)
+{
+  
+  for(auto u : g[v])
+    if( u != p && (!big[u]))
+      add(v, u, val);
+  return;
+}
+void dfs2(int v, int p, int keep)
+{
+  for(auto u : g[v])
+    if(u != p && u != bigchild[v]) 
+      dfs2(u, v, false);
+  
+  if(bigchild[v] != -1)
+    {
+      dfs2(bigchild[v], v, true);
+      big[bigchild[v]] = true;
+    }
+  add(v, v, 1);
+  for(auto q : Q[v])
+    {
+      if(q.F + L[v] <= n)
+	t[q.S] = ans[q.F+L[v]];
+      else
+	t[q.S] = 0;
+    }
+  big[bigchild[v]] = false;
+  if(keep == false)
+    add(v, v, -1);
+  return;
+}
+
+int main() {
+  
+  ios::sync_with_stdio(false);	
+  cin.tie(NULL);
+  int i, x, root= -1, q;
+  cin >> n; g.resize(n+2); Q.resize(n+2); s.resize(n+2); m.resize(n+2);
+  string s;
+  rep(i, 1, n+1)
+    {
+      cin >> s >> x;
+      if(x != 0)
+	{
+	  g[x].PB(i);
+	  g[i].PB(x);
+	}
+      else
+	root = i;
+    }
+  cin >> q;
+  rep(i, 1, q+1)
+    {
+      int a, b;
+      cin >> a >> b;
+      Q[a].PB({a, i});
+    }
+  L[root] = 0;
+  dfs0(root, root);
+  dfs2(root, root, true);
+  rep(i, 1, q+1)
+    cout << t[i] << endl;
+  return 0;
+}

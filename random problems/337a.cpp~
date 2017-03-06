@@ -1,0 +1,43 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+int diff(const void* a, const void* b)
+{
+  return (*(long long int*)a - *(long long int*)b);
+}
+
+long long int arr[100];
+
+int main()
+{
+  long long int m, n, temp, min, i;
+
+  scanf("%lld %lld", &n, &m);
+
+  for(i = 0; i < m; i++)
+    {
+      scanf("%lld", &arr[i]);
+    }
+
+  min = arr[0];
+
+  qsort(arr, m, sizeof(long long int), diff);
+  for( i = 0; i < m; i++)
+    {
+      printf("arr[%lld]:%lld\n", i, arr[i]);
+    }
+
+  printf("\n");
+  
+  for(i = n - 1; i < m; i++)
+    {
+      temp = arr[i] - arr[i-(n-1)];
+      printf("temp is: %lld\n", temp);
+      if(temp < min)
+	min = temp;
+    }
+
+  printf("%lld\n", min);
+
+  return 0;
+}
